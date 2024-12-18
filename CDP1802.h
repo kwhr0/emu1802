@@ -3,7 +3,6 @@
 // MIT License
 
 #include <cstdint>
-#include <cstdio>
 
 #define CDP1802_TRACE			0
 
@@ -21,13 +20,13 @@ public:
 	CDP1802();
 	void Reset();
 	void SetMemoryPtr(u8 *p) { m = p; }
+	u16 GetPC() const { return r[p]; }
 	int Execute(int n);
 private:
 	void setR(u8 index, u16 data) {
 		r[index] = data;
 		CDP1802_TRACE_LOG(index, data, acsStoreR);
 	}
-	// memory and I/O customize -- start
 	u8 imm8() {
 		u8 o = m[r[p]++];
 #if CDP1802_TRACE
@@ -44,17 +43,11 @@ private:
 		m[adr] = data;
 		CDP1802_TRACE_LOG(adr, data, acsStore);
 	}
-	u8 ef(u8 num) { return 0; }
-	u8 input(u8 port) { return 0; }
-	void Q() { printf("Q=%d\n", q); }
-	void output(u8 port, u8 data) {
-		if (port == 5 || port == 7) {
-			putchar(data);
-			fflush(stdout);
-		}
-		else printf("OUT(%d)=%02x\n", port, data);
-	}
-	// memory and I/O customize -- end
+	u8 input(u8 port);
+	void output(u8 port, u8 data);
+	u8 ef(u8 num);
+	void Q();
+	//
 	u8 *m;
 	u16 r[16];
 	u8 d, x, p, df, q, t, ie;

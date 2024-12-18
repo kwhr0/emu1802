@@ -3,6 +3,8 @@
 // MIT License
 
 #include "CDP1802.h"
+#include "main.h"
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
@@ -17,6 +19,49 @@ void CDP1802::Reset() {
 	memset(r, 0, sizeof(r));
 	d = x = p = df = q = t = ie = 0;
 }
+
+// I/O customize -- start
+
+CDP1802::u8 CDP1802::input(u8 port) {
+	switch (port) {
+		case 1: return file_getc();
+		case 2: return get_timing();
+		case 3: return get_keyboard();
+		default: return 0;
+	}
+}
+
+void CDP1802::output(u8 port, u8 data) {
+	static int sector, psgadr;
+	switch (port) {
+		case 1:
+			sector = (sector & 0xffff00) | data;
+			break;
+		case 2:
+			sector = (sector & 0xff00ff) | data << 8;
+			break;
+		case 3:
+			sector = (sector & 0x00ffff) | data << 16;
+			file_seek(sector);
+			break;
+		case 4:
+			psgadr = data;
+			break;
+		case 6:
+			psg_set(psgadr, data);
+			break;
+		case 5: case 7:
+			putchar(data);
+			fflush(stdout);
+			break;
+	}
+}
+
+CDP1802::u8 CDP1802::ef(u8 num) { return 0; }
+
+void CDP1802::Q() {}
+
+// I/O customize -- end
 
 #define mkc(x, c)	(d = t16 = (x) + ((c) && df), df = (t16 & 0x100) != 0)
 #define mkb(x, b)	(d = t16 = (x) - ((b) && !df), df = !(t16 & 0x100))
@@ -38,7 +83,7 @@ int CDP1802::Execute(int n) {
 #if CDP1802_TRACE
 				StopTrace();
 #else
-				exit(0);
+				emu_exit();
 #endif
 				break;
 			           case 0x01: case 0x02: case 0x03: case 0x04: case 0x05: case 0x06: case 0x07:
