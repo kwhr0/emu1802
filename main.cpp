@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
 					}
 					break;
 				case SDL_KEYUP:
-                    if (e.key.keysym.sym == sym) keyboard = 0;
+					if (e.key.keysym.sym == sym) keyboard = 0;
 					break;
 				case SDL_QUIT:
 					exit_flag = true;
