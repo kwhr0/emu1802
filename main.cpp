@@ -183,16 +183,16 @@ int main(int argc, char *argv[]) {
 	while (!exit_flag) {
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-            static SDL_Keycode sym;
+			static SDL_Keycode sym;
 			switch (e.type) {
 				case SDL_KEYDOWN:
 					if (e.key.repeat) break;
 					switch (sym = e.key.keysym.sym) {
 						case SDLK_RIGHT: keyboard = 28; break;
-                        case SDLK_LEFT:  keyboard = 29; break;
-                        case SDLK_UP:    keyboard = 30; break;
-                        case SDLK_DOWN:  keyboard = 31; break;
-                        default: keyboard = sym & SDLK_SCANCODE_MASK ? 0 : sym; break;
+						case SDLK_LEFT:  keyboard = 29; break;
+						case SDLK_UP:    keyboard = 30; break;
+						case SDLK_DOWN:  keyboard = 31; break;
+						default: keyboard = sym & SDLK_SCANCODE_MASK ? 0 : sym; break;
 					}
 					break;
 				case SDL_KEYUP:
