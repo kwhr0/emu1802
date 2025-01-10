@@ -3,6 +3,7 @@
 #include "PSG.h"
 #include <stdio.h>
 #include <getopt.h>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <SDL2/SDL.h>
